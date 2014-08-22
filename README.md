@@ -1,4 +1,8 @@
-python-spider
+python-code
 =============
 
-小规模爬虫代码
+*人生苦短，我用python*
+
+>python code
+>pyqt code
+
