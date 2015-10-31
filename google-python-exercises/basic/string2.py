@@ -55,7 +55,22 @@ def not_bad(s):
 #  a-front + b-front + a-back + b-back
 def front_back(a, b):
   # +++your code here+++
-    a_front = a[:(len(a)+1)/2]
+  # not well,but works.
+    a_len = len(a)
+    b_len = len(b)
+    if a_len % 2 == 0:
+      a_front = a[:a_len/2]
+      a_back = a[a_len/2 :]
+    else:
+      a_front = a[:a_len/2 + 1]
+      a_back = a[a_len/2 + 1:]
+    if b_len % 2 == 0:
+      b_front = b[:b_len/2]
+      b_back = b[b_len/2 :]
+    else:
+      b_front = b[:b_len/2 + 1]
+      b_back = b[b_len/2 + 1:]
+    return a_front + b_front + a_back + b_back
     
 
 
