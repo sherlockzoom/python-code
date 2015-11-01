@@ -1,4 +1,5 @@
 #!/usr/bin/python -tt
+# coding=utf-8
 # Copyright 2010 Google Inc.
 # Licensed under the Apache License, Version 2.0
 # http://www.apache.org/licenses/LICENSE-2.0
@@ -48,14 +49,33 @@ import sys
 def mimic_dict(filename):
   """Returns mimic dict mapping each word to list of words which follow it."""
   # +++your code here+++
-  return
+  mimic_dict = {}
+  input_file = open(filename, 'r')
+  text = input_file.read()
+  input_file.close()
+  words = text.split()
+  pre = ''
+  for word in words:
+      if pre not in mimic_dict:
+          mimic_dict[pre] = [word]
+      else:
+          mimic_dict[pre].append(word)
+      pre = word
+#  print mimic_dict
+  return mimic_dict
 
 
 def print_mimic(mimic_dict, word):
   """Given mimic dict and start word, prints 200 random words."""
+  #随机生成语句。
   # +++your code here+++
-  return
-
+  for unused_i in range(200):
+    print word,
+    nexts = mimic_dict.get(word)          # Returns None if not found
+    if not nexts:
+      nexts = mimic_dict['']  # Fallback to '' if not found
+    word = random.choice(nexts)
+  print word
 
 # Provided main(), calls mimic_dict() and mimic()
 def main():

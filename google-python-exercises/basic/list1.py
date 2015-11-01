@@ -1,4 +1,4 @@
-#!/usr/bin/python -tt
+#!/usr/bin/python 
 # Copyright 2010 Google Inc.
 # Licensed under the Apache License, Version 2.0
 # http://www.apache.org/licenses/LICENSE-2.0
@@ -39,22 +39,30 @@ def match_ends(words):
 # Hint: this can be done by making 2 lists and sorting each of them
 # before combining them.
 def front_x(words):
-    return
-  # +++your code here+++
-    
-
-
-
+    x_list = []
+    other_list = []
+    for word in words:
+      if word[0] == 'x':
+        x_list.append(word)
+      else:
+        other_list.append(word)
+    x_list.sort()
+    other_list.sort()
+    # print x_list,other_list
+    x_list[len(x_list):] = other_list
+    return x_list
 
 # C. sort_last
 # Given a list of non-empty tuples, return a list sorted in increasing
 # order by the last element in each tuple.
 # e.g. [(1, 7), (1, 3), (3, 4, 5), (2, 2)] yields
 # [(2, 2), (1, 3), (3, 4, 5), (1, 7)]
+
 # Hint: use a custom key= function to extract the last element form each tuple.
+def last(a):
+    return a[-1]
 def sort_last(tuples):
-  # +++your code here+++
-    return
+    return sorted(tuples, key=last)
 
 
 # Simple provided test() function used in main() to print
