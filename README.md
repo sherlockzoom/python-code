@@ -1,4 +1,5 @@
-<div class="toc"><ul><li><ul><li><a href="#os模块">os模块</a></li><li><a href="#sys模块">sys模块</a></li><li><a href="#math-模块">math 模块</a></li><li><a href="#collections模块">collections模块</a></li><li><a href="#heapq模块">heapq模块</a></li></ul></li></ul></div><h2 id="os模块">os模块</h2>
+<h1 id="python常用模块">python常用模块</h1>
+<div class="toc"><ul><li><a href="#python常用模块">python常用模块</a><ul><li><a href="#os模块">os模块</a></li><li><a href="#sys模块">sys模块</a></li><li><a href="#math-模块">math 模块</a></li><li><a href="#collections模块">collections模块</a></li><li><a href="#heapq模块">heapq模块</a></li></ul></li></ul></div><h2 id="os模块">os模块</h2>
 <p><code>os.sep</code>                     可以取代操作系统特定的路径分割符。<br>
 <code>os.name</code>                  字符串指示你正在使用的平台。比如对于Windows，它是’nt’，而对于Linux/Unix用户，它是’posix’。<br>
 <code>os.getcwd()</code>              函数得到当前工作目录，即当前Python脚本工作的目录路径。<br>
