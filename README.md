@@ -127,10 +127,11 @@
 <code>math.sinh(x)</code>            返回x的双曲正弦<br>
 <code>math.tanh(x)</code>            返回x的双曲正切</p>
 <p>6，特殊函数</p>
-<p><code>math.erf(x)</code>           # 不知道这几个是干啥的……原谅我吧……<br>
-<code>math.erfc(x)</code>          # 不知道这几个是干啥的……原谅我吧……<br>
-<code>math.gamma(x)</code>         # 不知道这几个是干啥的……原谅我吧……<br>
-<code>math.lgamma(x)</code>        # 不知道这几个是干啥的……原谅我吧……</p>
+<p><a href="https://docs.python.org/3/library/math.html">https://docs.python.org/3/library/math.html</a></p>
+<p><code>math.erf(x)</code>           # Return the error function at x.<br>
+<code>math.erfc(x)</code>          # Return the complementary error function at x<br>
+<code>math.gamma(x)</code>         # Return the Gamma function at x.<br>
+<code>math.lgamma(x)</code>        # Return the natural logarithm of the absolute value of the Gamma function at x.</p>
 <h2 id="collections模块">collections模块</h2>
 <p>Python拥有一些内置的数据类型，比如str,int, list, tuple, dict等， collections模块在这些内置数据类型的基础上，提供了几个额外的数据类型：</p>
 <ol>
