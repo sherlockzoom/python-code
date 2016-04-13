@@ -87,7 +87,7 @@ django这样做有下面几个原因：</p>
 <p>把数据模型用代码的方式表述来让你可以容易对它们进行版本控制。 这样，你可以很容易了解数据层 的变动情况。</p>
 </li>
 <li>
-<p>SQL只能描述特定类型的数据字段。 例如，大多数数据库都没有专用的字段类型来描述Email地址、URL。 而用Django的模型可以做到这一点。 好处就是高级的数据类型带来更高的效率和更好的代码复用。</p>
+<p>SQL只能描述特定类型的数据字段。 例如，大多数数据库都没有专用的字段类型来描述Email地址、URL。 而用Django的模型可以做到这一点。 好处就是<strong>高级的数据类型带来更高的效率和更好的代码复用</strong>。</p>
 </li>
 <li>
 <p>SQL还有在不同数据库平台的兼容性问题。 发布Web应用的时候，使用Python模块描述数据库结构信息可以避免为MySQL, PostgreSQL, and SQLite编写不同的CREATE TABLE。</p>
@@ -96,3 +96,50 @@ django这样做有下面几个原因：</p>
 <blockquote>
 <p>当然，这个方法也有一个缺点，就是Python代码和数据库表的同步问题</p>
 </blockquote>
+<h4 id="第一个模型">第一个模型</h4>
+<p>我们来假定下面的这些概念、字段和关系：</p>
+<ul>
+<li>
+<p>一个作者有姓，有名及email地址。</p>
+</li>
+<li>
+<p>出版商有名称，地址，所在城市、省，国家，网站。</p>
+</li>
+<li>
+<p>书籍有书名和出版日期。 它有一个或多个作者（和作者是多对多的关联关系[many-to-many]）， 只有一个出版商（和出版商是一对多的关联关系[one-to-many]，也被称作外键[foreign key]）</p>
+</li>
+</ul>
+<pre class=" language-py"><code class="prism  language-py"><span class="token keyword">from</span> django<span class="token punctuation">.</span><span class="token number">db</span> <span class="token keyword">import</span> models
+
+<span class="token keyword">class</span> Publisher<span class="token punctuation">(</span>models<span class="token punctuation">.</span>Model<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    name <span class="token operator">=</span> models<span class="token punctuation">.</span>CharField<span class="token punctuation">(</span>max_length<span class="token operator">=</span><span class="token number">30</span><span class="token punctuation">)</span>
+    address <span class="token operator">=</span> models<span class="token punctuation">.</span>CharField<span class="token punctuation">(</span>max_length<span class="token operator">=</span><span class="token number">50</span><span class="token punctuation">)</span>
+    city <span class="token operator">=</span> models<span class="token punctuation">.</span>CharField<span class="token punctuation">(</span>max_length<span class="token operator">=</span><span class="token number">60</span><span class="token punctuation">)</span>
+    state_province <span class="token operator">=</span> models<span class="token punctuation">.</span>CharField<span class="token punctuation">(</span>max_length<span class="token operator">=</span><span class="token number">30</span><span class="token punctuation">)</span>
+    country <span class="token operator">=</span> models<span class="token punctuation">.</span>CharField<span class="token punctuation">(</span>max_length<span class="token operator">=</span><span class="token number">50</span><span class="token punctuation">)</span>
+    website <span class="token operator">=</span> models<span class="token punctuation">.</span>URLField<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token keyword">class</span> Author<span class="token punctuation">(</span>models<span class="token punctuation">.</span>Model<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    first_name <span class="token operator">=</span> models<span class="token punctuation">.</span>CharField<span class="token punctuation">(</span>max_length<span class="token operator">=</span><span class="token number">30</span><span class="token punctuation">)</span>
+    last_name <span class="token operator">=</span> models<span class="token punctuation">.</span>CharField<span class="token punctuation">(</span>max_length<span class="token operator">=</span><span class="token number">40</span><span class="token punctuation">)</span>
+    email <span class="token operator">=</span> models<span class="token punctuation">.</span>EmailField<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token keyword">class</span> Book<span class="token punctuation">(</span>models<span class="token punctuation">.</span>Model<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    title <span class="token operator">=</span> models<span class="token punctuation">.</span>CharField<span class="token punctuation">(</span>max_length<span class="token operator">=</span><span class="token number">100</span><span class="token punctuation">)</span>
+    authors <span class="token operator">=</span> models<span class="token punctuation">.</span>ManyToManyField<span class="token punctuation">(</span>Author<span class="token punctuation">)</span>
+    publisher <span class="token operator">=</span> models<span class="token punctuation">.</span>ForeignKey<span class="token punctuation">(</span>Publisher<span class="token punctuation">)</span>
+    publication_date <span class="token operator">=</span> models<span class="token punctuation">.</span>DateField<span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre>
+<p>每个模型相当于单个数据库表，每个属性也是这个表中的一个字段。 属性名就是字段名，它的类型（例如 CharField ）相当于数据库的字段类型 （例如 varchar ）。</p>
+<blockquote>
+<p>一旦你创建了模型，Django自动为这些模型提供了高级的Python API。 运行 python <a href="http://manage.py">manage.py</a> shell</p>
+</blockquote>
+<h4 id="添加模块的字符串表现">添加模块的字符串表现</h4>
+<p>在使用<code>python manage.py shell</code>访问数据进行打印的时候出现下面的问题：<br>
+<code>[&lt;Publisher: Publisher object&gt;, &lt;Publisher: Publisher object&gt;]</code></p>
+<p>出现这种情况只需要为Publisher 对象添加一个方法 <code>__unicode__()</code> 。 <code>__unicode__()</code> 方法告诉Python如何将对象以unicode的方式显示出来。 为以上三个模型添加<code>__unicode__()</code>方法后，就可以看到效果了</p>
+<p>这里讲到了<code>Unicode对象</code>。<br>
+什么是unicode呢？</p>
+<ul>
+<li>你可以认为unicode对象就是一个Python字符串，它可以处理上百万不同类别的字符——从古老版本的Latin字符到非Latin字符，再到曲折的引用和艰涩的符号。</li>
+</ul>
