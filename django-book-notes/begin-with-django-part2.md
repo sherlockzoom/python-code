@@ -1,5 +1,5 @@
 <h1 id="django模型"><a href="http://djangobook.py3k.cn/2.0/chapter05/">django模型</a></h1>
-<blockquote>
+<div class="toc"><ul><li><a href="#django模型">django模型</a><ul><li><ul><li><a href="#在视图中进行数据库查询的笨方法">在视图中进行数据库查询的笨方法</a></li><li><a href="#mtv-开发模式">MTV 开发模式</a></li><li><a href="#数据库配置">数据库配置</a></li><li><a href="#在python代码里定义模型">在Python代码里定义模型</a><ul><li><a href="#第一个模型">第一个模型</a></li><li><a href="#添加模块的字符串表现">添加模块的字符串表现</a></li><li><a href="#数据过滤">数据过滤</a></li><li><a href="#获取单个对象">获取单个对象</a></li><li><a href="#数据排序">数据排序</a></li><li><a href="#连锁查询">连锁查询</a></li><li><a href="#限制返回的数据">限制返回的数据</a></li><li><a href="#更新多个对象">更新多个对象</a></li><li><a href="#删除对象">删除对象</a></li></ul></li></ul></li></ul></li></ul></div><blockquote>
 <p>时下大多数网站都是<code>数据库驱动</code> 的：网站的内容都是存储在关系型数据库中。 这使得数据和逻辑能够彻底地分开（视图和模板也以同样方式对逻辑和显示进行了分隔。)</p>
 </blockquote>
 <h3 id="在视图中进行数据库查询的笨方法">在视图中进行数据库查询的笨方法</h3>
