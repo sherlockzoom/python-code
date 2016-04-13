@@ -143,3 +143,50 @@ django这样做有下面几个原因：</p>
 <ul>
 <li>你可以认为unicode对象就是一个Python字符串，它可以处理上百万不同类别的字符——从古老版本的Latin字符到非Latin字符，再到曲折的引用和艰涩的符号。</li>
 </ul>
+<h4 id="数据过滤">数据过滤</h4>
+<p>我们很少会一次性从数据库中取出所有的数据；通常都只针对一部分数据进行操作。 在Django API中，我们可以使用<code>filter()</code> 方法对数据进行过滤：</p>
+<pre><code>&gt;&gt;&gt; Publisher.objects.filter(name='Apress')
+[&lt;Publisher: Apress&gt;]
+</code></pre>
+<h4 id="获取单个对象">获取单个对象</h4>
+<p>上面的例子中<code>filter()</code> 函数返回一个记录集，这个记录集是一个列表。 相对列表来说，有些时候我们更需要获取单个的对象， <code>get()</code> 方法就是在此时使用的：</p>
+<pre><code>&gt;&gt;&gt; Publisher.objects.get(name="Apress")
+&lt;Publisher: Apress&gt;
+</code></pre>
+<p>当查找不到时，会产生异常。这个 DoesNotExist 异常 是 Publisher 这个 model 类的一个属性，即 Publisher.DoesNotExist。在你的应用中，你可以捕获并处理这个异常，像这样：</p>
+<pre><code>try:
+    p = Publisher.objects.get(name='Apress')
+except Publisher.DoesNotExist:
+    print "Apress isn't in the database yet."
+else:
+    print "Apress is in the database."
+</code></pre>
+<h4 id="数据排序">数据排序</h4>
+<p>在你的 Django 应用中，你或许希望根据某字段的值对检索结果排序，比如说，按字母顺序。 那么，使用 order_by() 这个方法就可以搞定了。</p>
+<pre><code>&gt;&gt;&gt; Publisher.objects.order_by("name")
+[&lt;Publisher: Apress&gt;, &lt;Publisher: O'Reilly&gt;]
+</code></pre>
+<h4 id="连锁查询">连锁查询</h4>
+<p>我们已经知道如何对数据进行过滤和排序。 当然，通常我们需要同时进行过滤和排序查询的操作。 因此，你可以简单地写成这种“链式”的形式</p>
+<pre><code>&gt;&gt;&gt; Publisher.objects.filter(country="U.S.A.").order_by("-name")
+[&lt;Publisher: O'Reilly&gt;, &lt;Publisher: Apress&gt;]
+</code></pre>
+<h4 id="限制返回的数据">限制返回的数据</h4>
+<p>另一个常用的需求就是取出固定数目的记录。 想象一下你有成千上万的出版商在你的数据库里， 但是你只想显示第一个。 你可以使用标准的Python列表裁剪语句：</p>
+<pre><code>&gt;&gt;&gt; Publisher.objects.order_by('name')[0]
+&lt;Publisher: Apress&gt;
+</code></pre>
+<h4 id="更新多个对象">更新多个对象</h4>
+<p>在“插入和更新数据”小节中，我们有提到模型的save()方法，这个方法会更新一行里的所有列。 而某些情况下，我们只需要更新行里的某几列。<br>
+例如说我们现在想要将Apress Publisher的名称由原来的”Apress”更改为”Apress Publishing”。若使用save()方法，如：</p>
+<pre><code>&gt;&gt;&gt; p = Publisher.objects.get(name='Apress')
+&gt;&gt;&gt; p.name = 'Apress Publishing'
+&gt;&gt;&gt; p.save()
+</code></pre>
+<h4 id="删除对象">删除对象</h4>
+<p>删除数据库中的对象只需调用该对象的delete()方法即可：</p>
+<pre><code>&gt;&gt;&gt; p = Publisher.objects.get(name="O'Reilly")
+&gt;&gt;&gt; p.delete()
+&gt;&gt;&gt; Publisher.objects.all()
+[&lt;Publisher: Apress Publishing&gt;]
+</code></pre>
