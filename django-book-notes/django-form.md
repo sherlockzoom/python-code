@@ -1,5 +1,5 @@
-<h1 id="表单">表单</h1>
-<div class="toc"><ul><li><a href="#表单">表单</a><ul><li><ul><li><a href="#从request对象中获取数据">从Request对象中获取数据</a><ul><li><a href="#url相关信息">URL相关信息</a></li><li><a href="#有关request的其它信息">有关request的其它信息</a></li><li><a href="#提交的数据信息">提交的数据信息</a></li><li><a href="#一个简单的表单处理示例">一个简单的表单处理示例</a></li><li><a href="#改进表单">改进表单</a></li><li><a href="#简单的验证">简单的验证</a></li><li><a href="#编写contact表单">编写Contact表单</a></li></ul></li><li><a href="#第一个form类">第一个Form类</a></li></ul></li></ul></li></ul></div><p><a href="http://djangobook.py3k.cn/2.0/chapter07/">http://djangobook.py3k.cn/2.0/chapter07/</a></p>
+<h1 id="django表单">Django表单</h1>
+<div class="toc"><ul><li><a href="#django表单">Django表单</a><ul><li><ul><li><a href="#从request对象中获取数据">从Request对象中获取数据</a><ul><li><a href="#url相关信息">URL相关信息</a></li><li><a href="#有关request的其它信息">有关request的其它信息</a></li><li><a href="#提交的数据信息">提交的数据信息</a></li><li><a href="#一个简单的表单处理示例">一个简单的表单处理示例</a></li><li><a href="#改进表单">改进表单</a></li><li><a href="#简单的验证">简单的验证</a></li><li><a href="#编写contact表单">编写Contact表单</a></li></ul></li><li><a href="#第一个form类">第一个Form类</a></li><li><a href="#在视图中使用form对象">在视图中使用Form对象</a><ul><li><a href="#改变字段显示">改变字段显示</a></li><li><a href="#定制form设计">定制Form设计</a></li></ul></li></ul></li></ul></li></ul></div><p><a href="http://djangobook.py3k.cn/2.0/chapter07/">http://djangobook.py3k.cn/2.0/chapter07/</a></p>
 <p>这里介绍如何用django对用户通过表单提交的数据进行访问、有效性检查以及其他处理。</p>
 <h3 id="从request对象中获取数据">从<code>Request</code>对象中获取数据</h3>
 <blockquote>
@@ -368,6 +368,114 @@ def search(request):
 
 <span class="token keyword">class</span> ContactForm<span class="token punctuation">(</span>forms<span class="token punctuation">.</span>Form<span class="token punctuation">)</span><span class="token punctuation">:</span>
     subject <span class="token operator">=</span> forms<span class="token punctuation">.</span>CharField<span class="token punctuation">(</span><span class="token punctuation">)</span>
-    email <span class="token operator">=</span> forms<span class="token punctuation">.</span>EmailField<span class="token punctuation">(</span>required<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span>
-    message <span class="token operator">=</span> forms<span class="token punctuation">.</span>CharField<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    email <span class="token operator">=</span> forms<span class="token punctuation">.</span>EmailField<span class="token punctuation">(</span>required<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">#允许email为空
+</span>    message <span class="token operator">=</span> forms<span class="token punctuation">.</span>CharField<span class="token punctuation">(</span><span class="token punctuation">)</span>
 </code></pre>
+<h3 id="在视图中使用form对象">在视图中使用Form对象</h3>
+<blockquote>
+<p>学习了关于Form类的基本知识后，你会看到我们如何把它用到视图中，取代contact()代码中不整齐的部分。 一下示例说明了我们如何用forms框架重写contact()：</p>
+</blockquote>
+<pre class=" language-py"><code class="prism  language-py"><span class="token comment" spellcheck="true"># views.py
+</span>
+<span class="token keyword">from</span> django<span class="token punctuation">.</span>shortcuts <span class="token keyword">import</span> render_to_response
+<span class="token keyword">from</span> mysite<span class="token punctuation">.</span>contact<span class="token punctuation">.</span>forms <span class="token keyword">import</span> ContactForm
+
+<span class="token keyword">def</span> contact<span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">if</span> request<span class="token punctuation">.</span>method <span class="token operator">==</span> <span class="token string">'POST'</span><span class="token punctuation">:</span>
+        form <span class="token operator">=</span> ContactForm<span class="token punctuation">(</span>request<span class="token punctuation">.</span>POST<span class="token punctuation">)</span> <span class="token comment" spellcheck="true">#在视图中使用表单
+</span>        <span class="token keyword">if</span> form<span class="token punctuation">.</span>is_valid<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            <span class="token number">cd</span> <span class="token operator">=</span> form<span class="token punctuation">.</span>cleaned_data
+            send_mail<span class="token punctuation">(</span>
+                <span class="token number">cd</span><span class="token punctuation">[</span><span class="token string">'subject'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                <span class="token number">cd</span><span class="token punctuation">[</span><span class="token string">'message'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                <span class="token number">cd.</span>get<span class="token punctuation">(</span><span class="token string">'email'</span><span class="token punctuation">,</span> <span class="token string">'noreply@example.com'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                <span class="token punctuation">[</span><span class="token string">'siteowner@example.com'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+            <span class="token punctuation">)</span>
+            <span class="token keyword">return</span> HttpResponseRedirect<span class="token punctuation">(</span><span class="token string">'/contact/thanks/'</span><span class="token punctuation">)</span>
+    <span class="token keyword">else</span><span class="token punctuation">:</span>
+        form <span class="token operator">=</span> ContactForm<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> render_to_response<span class="token punctuation">(</span><span class="token string">'contact_form.html'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token string">'form'</span><span class="token punctuation">:</span> form<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true"># contact_form.html
+</span>
+<span class="token operator">&lt;</span>html<span class="token operator">&gt;</span>
+<span class="token operator">&lt;</span>head<span class="token operator">&gt;</span>
+    <span class="token operator">&lt;</span>title<span class="token operator">&gt;</span>Contact us<span class="token operator">&lt;</span><span class="token operator">/</span>title<span class="token operator">&gt;</span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>head<span class="token operator">&gt;</span>
+<span class="token operator">&lt;</span>body<span class="token operator">&gt;</span>
+    <span class="token operator">&lt;</span>h1<span class="token operator">&gt;</span>Contact us<span class="token operator">&lt;</span><span class="token operator">/</span>h1<span class="token operator">&gt;</span>
+
+    <span class="token punctuation">{</span><span class="token operator">%</span> <span class="token keyword">if</span> form<span class="token punctuation">.</span>errors <span class="token operator">%</span><span class="token punctuation">}</span>
+        <span class="token operator">&lt;</span>p style<span class="token operator">=</span><span class="token string">"color: red;"</span><span class="token operator">&gt;</span>
+            Please correct the error<span class="token punctuation">{</span><span class="token punctuation">{</span> form<span class="token punctuation">.</span>errors<span class="token operator">|</span>pluralize <span class="token punctuation">}</span><span class="token punctuation">}</span> below<span class="token punctuation">.</span>
+        <span class="token operator">&lt;</span><span class="token operator">/</span>p<span class="token operator">&gt;</span>
+    <span class="token punctuation">{</span><span class="token operator">%</span> endif <span class="token operator">%</span><span class="token punctuation">}</span>
+
+    <span class="token operator">&lt;</span>form action<span class="token operator">=</span><span class="token string">""</span> method<span class="token operator">=</span><span class="token string">"post"</span><span class="token operator">&gt;</span>
+        <span class="token operator">&lt;</span>table<span class="token operator">&gt;</span>
+            <span class="token punctuation">{</span><span class="token punctuation">{</span> form<span class="token punctuation">.</span>as_table <span class="token punctuation">}</span><span class="token punctuation">}</span>
+        <span class="token operator">&lt;</span><span class="token operator">/</span>table<span class="token operator">&gt;</span>
+        <span class="token operator">&lt;</span>input type<span class="token operator">=</span><span class="token string">"submit"</span> value<span class="token operator">=</span><span class="token string">"Submit"</span><span class="token operator">&gt;</span>
+    <span class="token operator">&lt;</span><span class="token operator">/</span>form<span class="token operator">&gt;</span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>body<span class="token operator">&gt;</span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>html<span class="token operator">&gt;</span>
+
+</code></pre>
+<h4 id="改变字段显示">改变字段显示</h4>
+<p>你可能首先注意到：当你在本地显示这个表单的时，message字段被显示成<code>input type=”text”</code> ，而它应该被显示成&lt;<code>textarea</code> &gt;。我们可以通过设置* widget* 来修改它：</p>
+<pre class=" language-py"><code class="prism  language-py"><span class="token keyword">from</span> django <span class="token keyword">import</span> forms
+
+<span class="token keyword">class</span> ContactForm<span class="token punctuation">(</span>forms<span class="token punctuation">.</span>Form<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    subject <span class="token operator">=</span> forms<span class="token punctuation">.</span>CharField<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    email <span class="token operator">=</span> forms<span class="token punctuation">.</span>EmailField<span class="token punctuation">(</span>required<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span>
+    message <span class="token operator">=</span> forms<span class="token punctuation">.</span>CharField<span class="token punctuation">(</span><span class="token operator">*</span><span class="token operator">*</span>widget<span class="token operator">=</span>forms<span class="token punctuation">.</span>Textarea<span class="token operator">*</span><span class="token operator">*</span> <span class="token punctuation">)</span>
+</code></pre>
+<p>forms框架把每一个字段的显示逻辑分离到一组部件（widget）中。 每一个字段类型都拥有一个默认的部件，我们也可以容易地替换掉默认的部件，或者提供一个自定义的部件</p>
+<p>除此之外还有许多可以设置的地方：</p>
+<ul>
+<li>设置最大长度 ： CharField提供max_length参数</li>
+<li>设置初始值 ：在创建Form实体时，使用initial参数</li>
+<li>自定义校验规则： 比如，提交反馈时，最少4个字。</li>
+<li>指定标签</li>
+<li>定制Form设计</li>
+</ul>
+<p>自定义校验规则例子：</p>
+<pre class=" language-py"><code class="prism  language-py"><span class="token keyword">from</span> django <span class="token keyword">import</span> forms
+
+<span class="token keyword">class</span> ContactForm<span class="token punctuation">(</span>forms<span class="token punctuation">.</span>Form<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    subject <span class="token operator">=</span> forms<span class="token punctuation">.</span>CharField<span class="token punctuation">(</span>max_length<span class="token operator">=</span><span class="token number">100</span><span class="token punctuation">)</span>
+    email <span class="token operator">=</span> forms<span class="token punctuation">.</span>EmailField<span class="token punctuation">(</span>required<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span>
+    message <span class="token operator">=</span> forms<span class="token punctuation">.</span>CharField<span class="token punctuation">(</span>widget<span class="token operator">=</span>forms<span class="token punctuation">.</span>Textarea<span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> clean_message<span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        message <span class="token operator">=</span> self<span class="token punctuation">.</span>cleaned_data<span class="token punctuation">[</span><span class="token string">'message'</span><span class="token punctuation">]</span>
+        num_words <span class="token operator">=</span> len<span class="token punctuation">(</span>message<span class="token punctuation">.</span>split<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token keyword">if</span> num_words <span class="token operator">&lt;</span> <span class="token number">4</span><span class="token punctuation">:</span>
+            <span class="token keyword">raise</span> forms<span class="token punctuation">.</span>ValidationError<span class="token punctuation">(</span><span class="token string">"Not enough words!"</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> message
+</code></pre>
+<p>指定标签：</p>
+<pre><code>class ContactForm(forms.Form):
+    subject = forms.CharField(max_length=100)
+    email = forms.EmailField(required=False, **label='Your e-mail address'** )
+    message = forms.CharField(widget=forms.Textarea)
+</code></pre>
+<h4 id="定制form设计">定制Form设计</h4>
+<p>在上面的<code>contact_form.html</code> 模板中我们使用<code>{{form.as_table}}</code> 显示表单，不过我们可以使用其他更加精确控制表单显示的方法。<br>
+<code>&lt;ul class=”errorlist”&gt;</code></p>
+<pre class=" language-js"><code class="prism  language-js"><span class="token operator">&lt;</span>style type<span class="token operator">=</span><span class="token string">"text/css"</span><span class="token operator">&gt;</span>
+    ul<span class="token punctuation">.</span>errorlist <span class="token punctuation">{</span>
+        margin<span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        padding<span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token punctuation">.</span>errorlist li <span class="token punctuation">{</span>
+        background<span class="token operator">-</span>color<span class="token punctuation">:</span> red<span class="token punctuation">;</span>
+        color<span class="token punctuation">:</span> white<span class="token punctuation">;</span>
+        display<span class="token punctuation">:</span> block<span class="token punctuation">;</span>
+        font<span class="token operator">-</span>size<span class="token punctuation">:</span> 10px<span class="token punctuation">;</span>
+        margin<span class="token punctuation">:</span> <span class="token number">0</span> <span class="token number">0</span> 3px<span class="token punctuation">;</span>
+        padding<span class="token punctuation">:</span> 4px 5px<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>style<span class="token operator">&gt;</span>
+</code></pre>
+<p><a href="http://djangobook.py3k.cn/2.0/chapter07/">更多表单知识请查看</a></p>
