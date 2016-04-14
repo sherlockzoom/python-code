@@ -1,5 +1,5 @@
 <h1 id="表单">表单</h1>
-<p><a href="http://djangobook.py3k.cn/2.0/chapter07/">http://djangobook.py3k.cn/2.0/chapter07/</a></p>
+<div class="toc"><ul><li><a href="#表单">表单</a><ul><li><ul><li><a href="#从request对象中获取数据">从Request对象中获取数据</a><ul><li><a href="#url相关信息">URL相关信息</a></li><li><a href="#有关request的其它信息">有关request的其它信息</a></li><li><a href="#提交的数据信息">提交的数据信息</a></li><li><a href="#一个简单的表单处理示例">一个简单的表单处理示例</a></li><li><a href="#改进表单">改进表单</a></li><li><a href="#简单的验证">简单的验证</a></li><li><a href="#编写contact表单">编写Contact表单</a></li></ul></li><li><a href="#第一个form类">第一个Form类</a></li></ul></li></ul></li></ul></div><p><a href="http://djangobook.py3k.cn/2.0/chapter07/">http://djangobook.py3k.cn/2.0/chapter07/</a></p>
 <p>这里介绍如何用django对用户通过表单提交的数据进行访问、有效性检查以及其他处理。</p>
 <h3 id="从request对象中获取数据">从<code>Request</code>对象中获取数据</h3>
 <blockquote>
