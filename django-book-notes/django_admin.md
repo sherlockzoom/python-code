@@ -1,4 +1,5 @@
 <h1 id="djnago站点管理">Djnago站点管理</h1>
+<p><a href="http://djangobook.py3k.cn/2.0/chapter06/">http://djangobook.py3k.cn/2.0/chapter06/</a></p>
 <p>django的自动管理界面：它读取你模型中的元数据，然后提供给你一个强大而且可以使用的界面，网站管理者可以用它立即工作。</p>
 <h3 id="django.contrib包">django.contrib包</h3>
 <p>django自动管理工具是<code>django.contrib</code>的一部分。使用它在开发中不用“重复造轮子”</p>
