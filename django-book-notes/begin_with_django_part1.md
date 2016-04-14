@@ -1,5 +1,5 @@
 <h1 id="django开发起步篇">django开发起步篇</h1>
-<h3 id="django是怎样处理请求的">django是怎样处理请求的</h3>
+<div class="toc"><ul><li><a href="#django开发起步篇">django开发起步篇</a><ul><li><ul><li><a href="#django是怎样处理请求的">django是怎样处理请求的</a></li><li><a href="#模块系统template-system">模块系统(Template System)</a><ul><li><a href="#python代码中使用django模板的最基本方式">python代码中使用django模板的最基本方式</a></li><li><a href="#模板渲染">模板渲染</a></li><li><a href="#基本的模板标签和过滤器">基本的模板标签和过滤器</a></li><li><a href="#过滤器">过滤器</a></li><li><a href="#include-模板标签">include 模板标签</a></li><li><a href="#模板继承">模板继承</a></li></ul></li><li><a href="#设计哲学理念">设计哲学理念</a></li></ul></li></ul></li></ul></div><h3 id="django是怎样处理请求的">django是怎样处理请求的</h3>
 <p><code>http://127.0.0.1:8000/hello/</code>为例</p>
 <ul>
 <li>进来的请求转入<code>/hello/</code></li>
