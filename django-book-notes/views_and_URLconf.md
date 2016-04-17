@@ -184,11 +184,105 @@ def foobar_view(request, template_name):
     return render_to_response(template_name, {'m_list': m_list})
 ```
 在后面的通用视图系统，我们会更加细节的讨论。
+###　伪造捕捉到的值
+比如说你有匹配某个模式的一堆视图，以及一个并不匹配这个模式但视图逻辑是一样的URL。 这种情况下，你可以通过向**同一个视图**传递额外URLconf参数来伪造URL值的捕捉。
+
+例如，你可能有一个显示某一个特定日子的某些数据的应用，URL类似这样的：
+```
+/mydata/jan/01/
+/mydata/jan/02/
+/mydata/jan/03/
+# ...
+/mydata/dec/30/
+/mydata/dec/31/
+```
+当然你可以直接使用命名组来捕获
+```py
+urlpatterns = patterns('',
+    (r'^mydata/(?P<month>\w{3})/(?P<day>\d\d)/$', views.my_view),
+)
+```
+**[友谊的小船说翻就翻](http://baike.baidu.com/item/%E5%8F%8B%E8%B0%8A%E7%9A%84%E5%B0%8F%E8%88%B9%E8%AF%B4%E7%BF%BB%E5%B0%B1%E7%BF%BB)**，比如你的BOSS可能会想增加这样一个URL，` /mydata/birthday/` ， 这个URL等价于` /mydata/jan/06/ `。这时你可以这样利用额外URLconf参数：
+```py
+urlpatterns = patterns('',
+    (r'^mydata/birthday/$', views.my_view, {'month': 'jan', 'day': '06'}),
+    (r'^mydata/(?P<month>\w{3})/(?P<day>\d\d)/$', views.my_view),
+)
+```
+在这里最帅的地方莫过于你根本不用改变你的视图函数。 视图函数只会关心它 获得 了 参数，它不会去管这些参数到底是捕捉回来的还是被额外提供的。month和day
+
+### 创建一个通用视图
+抽取出我们代码中共性的东西是一个很好的编程习惯.
+```
+def say_hello(person_name):
+    print 'Hello, %s' % person_name
+
+def say_goodbye(person_name):
+    print 'Goodbye, %s' % person_name
+# 把问候语提出来看做一个参数
+def greet(person_name, greeting):
+    print '%s, %s' % (greeting, person_name)
+```
+通过使用额外的URLconf参数，你可以把同样的思想应用到Django的视图中。
+
+更具体地说，比如这个视图显示一系列的 Event 对象，那个视图显示一系列的 BlogEntry 对象，并意识到它们都是一个用来显示一系列对象的视图的特例，而对象的类型其实就是一个变量。
+```py
+# urls.py
+
+from django.conf.urls.defaults import *
+from mysite import views
+
+urlpatterns = patterns('',
+    (r'^events/$', views.event_list),
+    (r'^blog/entries/$', views.entry_list),
+)
+
+# views.py
+
+from django.shortcuts import render_to_response
+from mysite.models import Event, BlogEntry
+
+def event_list(request):
+    obj_list = Event.objects.all()
+    return render_to_response('mysite/event_list.html', {'event_list': obj_list})
+
+def entry_list(request):
+    obj_list = BlogEntry.objects.all()
+    return render_to_response('mysite/blogentry_list.html', {'entry_list': obj_list})
+```
+这两个视图都是一样的功能，显示一些列的对象。让我们把显示的对象抽象出来
+```py
+# urls.py
+
+from django.conf.urls.defaults import *
+from mysite import models, views
+
+urlpatterns = patterns('',
+    (r'^events/$', views.object_list, {'model': models.Event}),
+    (r'^blog/entries/$', views.object_list, {'model': models.BlogEntry}),
+)
+
+# views.py
+
+from django.shortcuts import render_to_response
+
+def object_list(request, model):
+    obj_list = model.objects.all()
+    template_name = 'mysite/%s_list.html' % model.__name__.lower()
+    return render_to_response(template_name, {'object_list': obj_list})
+```
+就这样小小的改动，我们突然发现我们有了一个可复用的，模型无关的视图！ 从现在开始，当我们需要一个视图来显示一系列的对象时，我们可以简简单单的重用这一个 object_list 视图，而无须另外写视图代码了。 以下是我们做过的事情：
+
+- 我们通过 model 参数直接传递了模型类。 额外URLconf参数的字典是可以传递任何类型的对象，而不仅仅只是字符串。
+
+- 这一行： model.objects.all() 是 鸭子界定 
+
+- 我们使用 model.__name__.lower() 来决定模板的名字。 每个Python的类都有一个 __name__ 属性返回类名。 这特性在当我们直到运行时刻才知道对象类型的这种情况下很有用。 比如， BlogEntry 类的 __name__ 就是字符串 'BlogEntry' 。
+
+- 这个例子与前面的例子稍有不同，我们传递了一个通用的变量名给模板。 当然我们可以轻易的把这个变量名改成 blogentry_list 或者 event_list
 
 
 
 
-
-
-
+> [Django book 高级视图好URL配置](http://djangobook.py3k.cn/2.0/chapter08/)
 > Written with [StackEdit](https://stackedit.io/).
