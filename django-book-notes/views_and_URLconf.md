@@ -1,8 +1,6 @@
 
 高级视图和URL配置
 ===
-[toc]
-
 ## URLconf技巧
 > URLconf没有什么特别的，就像Django中其他东西一样，是python代码
 
@@ -110,7 +108,84 @@ urlpatterns = patterns('',
 
 - 否则，Django会把所有非命名组以位置参数的形式传递。
 
-- 在以上的两种情况，Django同时会以关键字参数的方式传递一些额外参数。 更具体的信息可参考下一节
+- 在以上的两种情况，Django同时会以关键字参数的方式传递一些额外参数。 
+
+### 传递额外的参数到视图函数中
+有时会发现你写的视图十分相似，只有点点不同。比如你有2个视图，出来模板不同其他都相同。
+```py
+# urls.py
+
+from django.conf.urls.defaults import *
+from mysite import views
+
+urlpatterns = patterns('',
+    (r'^foo/$', views.foo_view),
+    (r'^bar/$', views.bar_view),
+)
+
+# views.py
+
+from django.shortcuts import render_to_response
+from mysite.models import MyModel
+
+def foo_view(request):
+    m_list = MyModel.objects.filter(is_new=True)
+    return render_to_response('template1.html', {'m_list': m_list}) #use tmplate1.html
+def bar_view(request):
+    m_list = MyModel.objects.filter(is_new=True)
+    return render_to_response('template2.html', {'m_list': m_list}) #use tmplate2.html
+```
+这里做了重复的工作，显然是不够简洁的。我们可以通过捕获URL，在视图中检查再决定使用哪个模板。
+```py
+# urls.py
+
+from django.conf.urls.defaults import *
+from mysite import views
+
+urlpatterns = patterns('',
+    (r'^(foo)/$', views.foobar_view),
+    (r'^(bar)/$', views.foobar_view),
+)
+
+# views.py
+
+from django.shortcuts import render_to_response
+from mysite.models import MyModel
+
+def foobar_view(request, url):
+    m_list = MyModel.objects.filter(is_new=True)
+    if url == 'foo':
+        template_name = 'template1.html'
+    elif url == 'bar':
+        template_name = 'template2.html'
+    return render_to_response(template_name, {'m_list': m_list})
+```
+> 这种解决方案的问题还是老缺点，就是把你的URL耦合进你的代码里面了。 如果你打算把 `/foo/` 改成 `/fooey/ `的话，那么你就得记住要去改变视图里面的代码。
+
+对一个可选URL配置参数的**优雅解决方法**： URLconf里面的每一个模式都可以包含第三个数据： 一个关键字参数的字典：
+```py
+# urls.py
+
+from django.conf.urls.defaults import *
+from mysite import views
+
+urlpatterns = patterns('',
+    (r'^foo/$', views.foobar_view, {'template_name': 'template1.html'}),
+    (r'^bar/$', views.foobar_view, {'template_name': 'template2.html'}),
+)
+
+# views.py
+
+from django.shortcuts import render_to_response
+from mysite.models import MyModel
+
+def foobar_view(request, template_name):
+    m_list = MyModel.objects.filter(is_new=True)
+    return render_to_response(template_name, {'m_list': m_list})
+```
+在后面的通用视图系统，我们会更加细节的讨论。
+
+
 
 
 
