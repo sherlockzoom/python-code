@@ -1,3 +1,13 @@
+## 主要内容
+
+
++ Django book notes https://github.com/sherlockzoom/python-notes/tree/master/django-book-notes
++ Google-python练习 https://github.com/sherlockzoom/python-notes/tree/master/google-python-exercises
++ learn-Python-Hard-Way https://github.com/sherlockzoom/python-notes/tree/master/learnPythonHardWay
+
+---
+
+
 <h1 id="python常用模块">python常用模块</h1>
 <div class="toc"><ul><li><a href="#python常用模块">python常用模块</a><ul><li><a href="#os模块">os模块</a></li><li><a href="#sys模块">sys模块</a></li><li><a href="#math-模块">math 模块</a></li><li><a href="#collections模块">collections模块</a></li><li><a href="#heapq模块">heapq模块</a></li></ul></li></ul></div><h2 id="os模块">os模块</h2>
 <p><code>os.sep</code>                     可以取代操作系统特定的路径分割符。<br>
