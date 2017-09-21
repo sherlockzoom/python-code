@@ -4,6 +4,8 @@
 + Django book notes https://github.com/sherlockzoom/python-notes/tree/master/django-book-notes
 + Google-python练习 https://github.com/sherlockzoom/python-notes/tree/master/google-python-exercises
 + learn-Python-Hard-Way https://github.com/sherlockzoom/python-notes/tree/master/learnPythonHardWay
++ 迭代器和生成器 https://github.com/sherlockzoom/python-notes/blob/master/iterator_and_yield.md
+
 
 ---
 
