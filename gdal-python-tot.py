@@ -50,7 +50,7 @@ def parse_tif():
 
     # nir_part = min_max_scaler.fit_transform(nir_part)
 
-    ndwi = (b_part - nir_part)/(g_part + nir_part)
+    ndwi = (g_part - nir_part)/(g_part + nir_part)
 
 
     b_r_g = None
